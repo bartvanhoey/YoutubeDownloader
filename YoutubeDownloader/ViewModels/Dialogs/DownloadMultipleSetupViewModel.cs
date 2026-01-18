@@ -10,7 +10,6 @@ using CommunityToolkit.Mvvm.Input;
 using YoutubeDownloader.Core.Downloading;
 using YoutubeDownloader.Framework;
 using YoutubeDownloader.Services;
-using YoutubeDownloader.Utils;
 using YoutubeDownloader.Utils.Extensions;
 using YoutubeDownloader.ViewModels.Components;
 using YoutubeExplode.Videos;
@@ -40,7 +39,7 @@ public partial class DownloadMultipleSetupViewModel(
     public ObservableCollection<IVideo> SelectedVideos { get; } = [];
 
     public IReadOnlyList<Container> AvailableContainers { get; } =
-        [Container.Mp4, Container.WebM, Container.Mp3, new("ogg")];
+    [Container.Mp4, Container.WebM, Container.Mp3, new("ogg")];
 
     public IReadOnlyList<VideoQualityPreference> AvailableVideoQualityPreferences { get; } =
         // Without .AsEnumerable(), the below line throws a compile-time error starting with .NET SDK v9.0.200
@@ -88,10 +87,10 @@ public partial class DownloadMultipleSetupViewModel(
             if (settingsService.ShouldSkipExistingFiles && File.Exists(baseFilePath))
                 continue;
 
-            var filePath = PathEx.EnsureUniquePath(baseFilePath);
+            var filePath = Path.EnsureUniqueFilePath(baseFilePath);
 
             // Download does not start immediately, so lock in the file path to avoid conflicts
-            DirectoryEx.CreateDirectoryForFile(filePath);
+            Directory.CreateDirectoryForFile(filePath);
             await File.WriteAllBytesAsync(filePath, []);
 
             downloads.Add(
